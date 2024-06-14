@@ -8,8 +8,6 @@ from langchain.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
-
-
 prompt_template = """
 
 Human: Use the following pieces of context to provide a 
@@ -31,8 +29,6 @@ bedrock = boto3.client(service_name = "bedrock-runtime", region_name = "us-east-
 #Get embeddings model from bedrock
 bedrock_embedding = BedrockEmbeddings(model_id="amazon.titan-embed-text-v1", client= bedrock)
 
-
-
 def get_documents():
     loader = PyPDFDirectoryLoader("Data")
     documents = loader.load()
@@ -42,7 +38,6 @@ def get_documents():
     docs = text_spliter.split_documents(documents)
     return docs
 
-
 def get_vector_store(docs):
    vectorstore_faiss =  FAISS.from_documents(
         docs,
@@ -50,19 +45,12 @@ def get_vector_store(docs):
     )
    vectorstore_faiss.save_local("faiss_local")
 
-
-
 def get_llm():
     llm = Bedrock(model_id = "mistral.mistral-7b-instruct-v0:2", client = bedrock)
     return llm
-
-
-
-
 PROMPT = PromptTemplate(
     template=prompt_template, input_variables=["context", "question"]
 )
-
 
 def get_llm_response(llm, vectorstore_faiss, query):
 
@@ -78,8 +66,6 @@ def get_llm_response(llm, vectorstore_faiss, query):
     
     response = qa({"query": query})
     return response['result']
-
-
 
 def main():
     st.set_page_config("RAG")
